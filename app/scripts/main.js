@@ -26,10 +26,10 @@ define([
 
   var viewModel = {
     initialized: ko.observable(false),
-    repoFilter: ko.observable('test(1|2)'),
+    repoFilter: ko.observable(),
     availableRepos: ko.observableArray(),
     file: ko.observable('README.md'),
-    repoFileContent: ko.observableArray(),
+    repoFileContent: ko.observableArray()
   };
 
   viewModel.selectAllInFilter = function() {
@@ -53,7 +53,11 @@ define([
     if (!nameFilter) {
       return true;
     } else {
-      return new RegExp(viewModel.repoFilter(), 'igm').test(repo.fullName);
+      var reg = new RegExp(viewModel.repoFilter(), 'igm');
+      var fields = ['fullName', 'description'];
+      return _.some(fields, function(path) {
+        return reg.test(_.get(repo, path));
+      });
     }
   }
 
@@ -72,7 +76,6 @@ define([
       return repo.owner;
     }));
   });
-
 
   viewModel.commonBranch = {
     newBranchName: ko.observable(),
@@ -141,7 +144,6 @@ define([
     return this;
   };
 
-
   function Repo(info) {
     var self = this;
 
@@ -172,7 +174,6 @@ define([
 
     this.latestSemverTag = ko.observable().promiseAction(function() {
       return self.tags.fetch().then(function(tags) {
-      throw new Error('test are bests');
         return _.filter(_.map(tags, 'name'), semver.valid)[0];
       });
     });
@@ -228,7 +229,6 @@ define([
   //   repo: 'knockout.bindingHandlers.number'
   // }));
 
-
   function cloneRepoInfo(repoInfo, extra) {
     return _.assign(_.cloneDeep(repoInfo), extra);
   }
@@ -270,7 +270,6 @@ define([
       console.log('failed', e);
     });
   };
-
 
   viewModel.getFileContent = function() {
     var allFiles = viewModel.selectedRepos().map(function(repo) {

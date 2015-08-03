@@ -46,6 +46,7 @@
                 <tr>
                     <td>
                         <a target="_blank" data-bind="attr: {href : htmlUrl}"><span data-bind="text: fullName"></span> <i class="glyphicon glyphicon-new-window"></i></a>
+                        <span class="text-muted" data-bind="text: description"></span>
                     </td>
                     <td>
                         <input type="checkbox" data-bind="checked: selected ">
@@ -58,12 +59,10 @@
             <thead>
                 <tr>
                     <th>Repo</th>
-                    <th>Open issues (
-                        <span data-bind="text: commonBranch.openIssues().length"></span>)
+                    <th>Open issues (<span data-bind="text: commonBranch.openIssues().length"></span>)
                         <spinner params="action: commonBranch.openIssues.fetch"></spinner>
                     </th>
-                    <th>Open pull requests (
-                        <span data-bind="text: commonBranch.openPulls().length"></span>)
+                    <th>Open pull requests (<span data-bind="text: commonBranch.openPulls().length"></span>)
                         <spinner params="action: commonBranch.openPulls.fetch"></spinner>
                     </th>
                     <th>Latest semver tag
@@ -85,8 +84,8 @@
                         <error-button params="action: openIssues.fetch"></error-button>
                         <spinner params="action: openIssues.fetch"></spinner>
                     </td>
-                     <td>
-                        <a target="_blank" data-bind="text: openPulls().length ,attr: {href: htmlUrl + '/issues'}, css: {'text-muted': openPulls.fetch.isPending}"></a>
+                    <td>
+                        <a target="_blank" data-bind="text: openPulls().length ,attr: {href: htmlUrl + '/pulls'}, css: {'text-muted': openPulls.fetch.isPending}"></a>
                         <error-button params="action: openPulls.fetch"></error-button>
                         <spinner params="action: openPulls.fetch"></spinner>
                     </td>
