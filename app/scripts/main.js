@@ -278,14 +278,6 @@ define([
           content: content
         });
       });
-
-      // .readBinary().then(function(content) {
-      //   return {
-      //     owner: repoInfo.owner,
-      //     repo: repoInfo.repo,
-      //     content: content
-      //   }
-      // });
     });
 
     Promise.all(allFiles).then(function(results) {
