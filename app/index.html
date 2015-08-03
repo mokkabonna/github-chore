@@ -1,101 +1,129 @@
 <!doctype html>
 <html lang="">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>github chore</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-
-    <!-- build:css(.) styles/vendor.css -->
-    <!-- bower:css -->
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
-    <!-- endbower -->
-    <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <!-- endbuild -->
-  </head>
-  <body>
+    <script data-main="scripts/config" src="bower_components/requirejs/require.js"></script>
+</head>
+
+<body>
     <!--[if lt IE 10]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
-
-    
-    <div class="container">
-      <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-        <h3 class="text-muted">github chore</h3>
-      </div>
-
-      <div class="jumbotron">
-        <h1>'Allo, 'Allo!</h1>
-        <p class="lead">Always a pleasure scaffolding your apps.</p>
-        <p><a class="btn btn-lg btn-success" href="#">Splendid! <span class="glyphicon glyphicon-ok"></span></a></p>
-      </div>
-
-      <div class="row marketing">
-        <div class="col-lg-6">
-          <h4><a href="https://html5boilerplate.com/">HTML5 Boilerplate</a></h4>
-          <p>HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.</p>
-
-          
-
-          <h4><a href="http://getbootstrap.com/">Bootstrap</a></h4>
-          <p>Sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.</p>
-
-          
+    <div class="container-fluid">
+        <h2>Available repos (showing <span data-bind="text:filteredAvailableRepos().length"></span> of <span data-bind="text:availableRepos().length"></span>)</h2>
+        <div class="form-inline">
+            <div class="form-group">
+                <label for="repo-filter">Filter repos</label>
+                <input id="repo-filter" class="form-control" type="text" data-bind="textInput: repoFilter">
+            </div>
+            <div class="checkbox">
+                <label>
+                    Show forks
+                    <input type="checkbox" data-bind="checked: showForks">
+                </label>
+            </div>
+            <div class="form-group pull-right">
+                <button class="form-control" type="button" data-bind="click:selectAllInFilter">Select all in filter</button>
+            </div>
         </div>
-      </div>
-
-      <div class="footer">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
-      </div>
+        <table class="table repos">
+            <thead>
+                <tr>
+                    <th>Repo</th>
+                    <th>Select</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: filteredAvailableRepos">
+                <tr>
+                    <td>
+                        <a target="_blank" data-bind="attr: {href : htmlUrl}"><span data-bind="text: fullName"></span> <i class="glyphicon glyphicon-new-window"></i></a>
+                    </td>
+                    <td>
+                        <input type="checkbox" data-bind="checked: selected ">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h2>Operating repos</h2>
+        <table class="table repos">
+            <thead>
+                <tr>
+                    <th>Repo</th>
+                    <th>Open issues (
+                        <span data-bind="text: commonBranch.openIssues().length"></span>)
+                        <spinner params="action: commonBranch.openIssues.fetch"></spinner>
+                    </th>
+                    <th>Open pull requests (
+                        <span data-bind="text: commonBranch.openPulls().length"></span>)
+                        <spinner params="action: commonBranch.openPulls.fetch"></spinner>
+                    </th>
+                    <th>Latest semver tag
+                        <spinner params="action: commonBranch.latestSemverTag.fetch"></spinner>
+                    </th>
+                    <th>Branch
+                        <spinner params="action: commonBranch.branches.fetch"></spinner>
+                    </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: selectedRepos">
+                <tr>
+                    <td>
+                        <a target="_blank" data-bind="attr: {href : htmlUrl}"><span data-bind="text: fullName"></span> <i class="glyphicon glyphicon-new-window"></i></a>
+                    </td>
+                    <td>
+                        <a target="_blank" data-bind="text: openIssues().length ,attr: {href: htmlUrl + '/issues'}, css: {'text-muted': openIssues.fetch.isPending}"></a>
+                        <error-button params="action: openIssues.fetch"></error-button>
+                        <spinner params="action: openIssues.fetch"></spinner>
+                    </td>
+                     <td>
+                        <a target="_blank" data-bind="text: openPulls().length ,attr: {href: htmlUrl + '/issues'}, css: {'text-muted': openPulls.fetch.isPending}"></a>
+                        <error-button params="action: openPulls.fetch"></error-button>
+                        <spinner params="action: openPulls.fetch"></spinner>
+                    </td>
+                    <td>
+                        <observable-text params="observable: latestSemverTag"></observable-text>
+                    </td>
+                    <td class="form-inline">
+                        <select class="form-control" data-bind="options: branches, value:selectedBranch, attr: {disabled: branches.fetch.isPending}"></select>
+                        <error-button params="action: branches.fetch"></error-button>
+                        <spinner params="action: branches.fetch"></spinner>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" data-bind="click: deleteSelectedBranch">Delete Branch</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody data-bind="with: commonBranch">
+            </tbody>
+        </table>
+        <div data-bind="with: commonBranch">
+            <h2>Perform actions on all repos</h2>
+            <div class="form-inline">
+                <div class="form-group">
+                    <select id="commonBranch" class="form-control" data-bind="options: allBranches, value:selectedBranch"></select>
+                    <button type="button" class="btn btn-default" data-bind="click: selectSameBranch">Select same branch</button>
+                </div>
+                <div class="form-group">
+                    <label for="newBranchName">New branch name</label>
+                    <input id="newBranchName" class="form-control" data-bind="value: newBranchName">
+                </div>
+                <button type="button" class="btn btn-default" data-bind="click:createBranch">Create new branch from selected</button>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-danger" data-bind="click: deleteAllSelectedBranches">Delete all selected branches</button>
+                </div>
+            </div>
+        </div>
     </div>
-    
+</body>
 
-    <!-- build:js(.) scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="/bower_components/jquery/dist/jquery.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
-
-    
-    <!-- build:js(.) scripts/plugins.js -->
-    <script src="/bower_components/bootstrap/js/affix.js"></script>
-    <script src="/bower_components/bootstrap/js/alert.js"></script>
-    <script src="/bower_components/bootstrap/js/dropdown.js"></script>
-    <script src="/bower_components/bootstrap/js/tooltip.js"></script>
-    <script src="/bower_components/bootstrap/js/modal.js"></script>
-    <script src="/bower_components/bootstrap/js/transition.js"></script>
-    <script src="/bower_components/bootstrap/js/button.js"></script>
-    <script src="/bower_components/bootstrap/js/popover.js"></script>
-    <script src="/bower_components/bootstrap/js/carousel.js"></script>
-    <script src="/bower_components/bootstrap/js/scrollspy.js"></script>
-    <script src="/bower_components/bootstrap/js/collapse.js"></script>
-    <script src="/bower_components/bootstrap/js/tab.js"></script>
-    <!-- endbuild -->
-    
-
-    <!-- build:js scripts/main.js -->
-    <script src="scripts/main.js"></script>
-    <!-- endbuild -->
-
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-    <script>
-      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
-      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
-      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-      e.src='https://www.google-analytics.com/analytics.js';
-      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-      ga('create','UA-XXXXX-X');ga('send','pageview');
-    </script>
-  </body>
 </html>

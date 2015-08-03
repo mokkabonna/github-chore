@@ -2,17 +2,17 @@
   "name": "github-chore",
   "private": true,
   "dependencies": {
-    "bootstrap": "~3.3.5"
-  },
-  "overrides": {
-    "bootstrap": {
-      "main": [
-        "less/bootstrap.less",
-        "dist/css/bootstrap.css",
-        "dist/js/bootstrap.js",
-        "dist/fonts/*"
-      ]
-    }
+    "bootstrap": "~3.3.5",
+    "requirejs": "~2.1.20",
+    "knockout": "~3.3.0",
+    "jquery": "~2.1.4",
+    "mout": "~0.11.0",
+    "bluebird": "~2.9.34",
+    "octokat": "~0.4.11",
+    "lodash-amd": "~3.10.0",
+    "semver": "~4.3.4",
+    "requirejs-plugins": "~1.0.3",
+    "requirejs-text": "~2.0.14"
   },
   "devDependencies": {
     "chai": "~3.2.0",
